@@ -1,0 +1,25 @@
+name: Call Reusable Hello
+
+on:
+  workflow_dispatch:
+    inputs:
+      greeting:
+        description: 'Custom greeting message'
+        required: false
+        default: 'Hello from the caller!'
+        type: string
+
+jobs:
+  call-reusable:
+    uses: elouafiqAli/throwaway-reusable-hello/.github/workflows/reusable.yml@main
+    with:
+      greeting: ${{ inputs.greeting || 'Hello from the caller!' }}
+
+  print-result:
+    needs: call-reusable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print result from reusable workflow
+        run: |
+          echo "Reusable workflow returned: ${{ needs.call-reusable.outputs.result }}"
+          echo "Test passed!"
